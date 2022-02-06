@@ -16,4 +16,4 @@ e. [React 17.0.2](https://reactjs.org/versions/)
 
 f. [Web3.js 1.6.1](https://web3js.readthedocs.io/en/v1.5.2/)
 
-g. [Moralis](https://docs.moralis.com/)
+g. [Moralis](https://docs.moralis.io/)
