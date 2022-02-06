@@ -1,0 +1,57 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  zoom: 200%;
+}
+
+button {
+  cursor: pointer !important;
+}
+
+.ReactModal__Content {
+  max-width: 300px;
+  max-height: 300px;
+  margin: 0 auto;
+  position: relative;
+  padding-top: 40px !important;
+
+  .close-btn {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+  }
+}
+
+.app-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 40px;
+
+  .account {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background: #ccc;
+    padding: 10px;
+
+    text-overflow: ellipsis;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+
+    cursor: pointer;
+  }
+
+  .header {
+    margin-bottom: 20px;
+  }
+}
