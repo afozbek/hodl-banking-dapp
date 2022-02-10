@@ -38,17 +38,41 @@ button {
     position: absolute;
     top: 10px;
     right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    background: #ccc;
-    padding: 10px;
-
-    text-overflow: ellipsis;
-    max-width: 100px;
-    white-space: nowrap;
-    overflow: hidden;
 
     cursor: pointer;
+
+    .connected {
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      background: #ccc;
+      padding: 10px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .text {
+        text-overflow: ellipsis;
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        font-weight: bold;
+      }
+
+      .logout-btn {
+      }
+    }
+    .connect-btn {
+    }
+  }
+
+  .balance-container {
+    margin-top: 30px;
+
+    ul {
+      text-align: center;
+    }
   }
 
   .header {

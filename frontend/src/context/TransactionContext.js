@@ -1,7 +1,8 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 
 import Web3 from "web3";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "config";
+import { useMoralis } from "react-moralis";
 
 const TransactionContext = createContext();
 
@@ -10,35 +11,45 @@ const TransactionContextProvider = props => {
 
   const [web3Instance, setWeb3Instance] = useState(null);
   const [smartContractInstance, setSmartContractInstance] = useState(null);
-  const [account, setAccount] = useState();
+  const { user, authenticate, logout } = useMoralis();
 
   useEffect(() => {
     async function load() {
       const web3 = await getWeb3Instance();
-      const accounts = await getAccounts(web3);
       const contactList = await getContractInstance(web3);
 
       setWeb3Instance(web3);
       setSmartContractInstance(contactList);
-      setAccount(accounts[0]);
     }
 
     load();
   }, []);
+
+  const account = useMemo(() => {
+    if (user) {
+      return user.get("ethAddress");
+    }
+  }, [user]);
 
   const getWeb3Instance = async () => {
     const localGanacheRPCUrl = "http://localhost:7545";
     return new Web3(Web3.givenProvider || localGanacheRPCUrl);
   };
 
-  const getAccounts = async web3 => {
-    return await web3.eth.requestAccounts();
-  };
-
   // Returns contactSmartContractInstance
   const getContractInstance = async web3 => {
     // Instantiate smart contract using ABI and address.
     return new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+  };
+
+  const connectWallet = async () => {
+    // For some reason user returns as undefined
+    const user = await authenticate({ signingMessage: "Connect Account with Moralis" });
+  };
+
+  const logoutUser = async () => {
+    // For some reason user returns as undefined
+    await logout();
   };
 
   return (
@@ -49,7 +60,9 @@ const TransactionContextProvider = props => {
         smartContractInstance,
         account,
         getContractInstance,
-        setTransactionList
+        setTransactionList,
+        connectWallet,
+        logoutUser
       }}
     >
       {props.children}

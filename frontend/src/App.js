@@ -7,7 +7,8 @@ import { Link } from "react-router-dom";
 import { useMoralis } from "react-moralis";
 
 var App = () => {
-  const { web3Instance, smartContractInstance, account, getContractInstance } = useContext(TransactionContext);
+  const { web3Instance, smartContractInstance, account, getContractInstance, connectWallet, logoutUser } =
+    useContext(TransactionContext);
 
   // const [moralisUser, setMoralisUser] = useState(null);
   const { authenticate, isAuthenticated, user: moralisUser } = useMoralis();
@@ -41,9 +42,19 @@ var App = () => {
 
   return (
     <div className="app-container">
-      {/* <h1>Welcome {user.get("username")}</h1> */}
       <div className="account">
-        <strong>{account}</strong>
+        {account ? (
+          <div className="connected">
+            <div className="text">{account}</div>
+            <button className="logout-btn" onClick={logoutUser}>
+              Logout
+            </button>
+          </div>
+        ) : (
+          <button className="connect-btn" onClick={connectWallet}>
+            Connect Wallet
+          </button>
+        )}
       </div>
       <AppContext.Provider
         value={{
@@ -54,8 +65,10 @@ var App = () => {
         }}
       >
         <nav style={{ borderBottom: "solid 1px", paddingBottom: "1rem", cursor: "pointer" }}>
-          <Link to="/">Home</Link> {" - "}
-          <Link to="/hodl">HODL Money</Link> {" - "}
+          <Link to="/balance">Balance</Link> {" - "}
+          <Link to="/hodl">HODL</Link> {" - "}
+          <Link to="/withdraw">Withdraw</Link> {" - "}
+          <Link to="/admin">Admin</Link> {" - "}
         </nav>
 
         <Outlet />
