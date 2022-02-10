@@ -15,6 +15,7 @@ import { TransactionContextProvider } from "context/TransactionContext";
 import Hodl from "pages/Hodl";
 import Withdraw from "pages/Withdraw";
 import Admin from "pages/Admin";
+import Balance from "pages/Balance";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ ReactDOM.render(
           <Routes>
             <Route path="/" element={<App />}>
               <Route path="hodl" element={<Hodl />}></Route>
+              <Route path="balance" element={<Balance />}></Route>
               <Route path="withdraw" element={<Withdraw />}></Route>
               <Route path="admin" element={<Admin />}></Route>
 

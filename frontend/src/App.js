@@ -65,7 +65,7 @@ var App = () => {
         }}
       >
         <nav style={{ borderBottom: "solid 1px", paddingBottom: "1rem", cursor: "pointer" }}>
-          <Link to="/">Home</Link> {" - "}
+          <Link to="/balance">Balance</Link> {" - "}
           <Link to="/hodl">HODL</Link> {" - "}
           <Link to="/withdraw">Withdraw</Link> {" - "}
           <Link to="/admin">Admin</Link> {" - "}
