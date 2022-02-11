@@ -11,6 +11,7 @@ const TransactionContextProvider = props => {
 
   const [web3Instance, setWeb3Instance] = useState(null);
   const [smartContractInstance, setSmartContractInstance] = useState(null);
+  const [networkName, setNetworkName] = useState(null);
   const { user, authenticate, logout } = useMoralis();
 
   useEffect(() => {
@@ -20,10 +21,26 @@ const TransactionContextProvider = props => {
 
       setWeb3Instance(web3);
       setSmartContractInstance(contactList);
+
+      const networkId = await web3.eth.net.getId();
+      const networkname = getNetworkName(networkId);
+      console.log({ networkId });
+      console.log({ networkname });
     }
 
     load();
   }, []);
+
+  function getNetworkName(chainID) {
+    const networks = {
+      1: "Ethereum Mainnet",
+      4: "Ethereum Rinkeby",
+      97: "Binance Smart Chain Testnet",
+      5777: "Ganache Local Network",
+      80001: "Polygon Mumbai Testnet"
+    };
+    return networks[chainID];
+  }
 
   const account = useMemo(() => {
     if (user) {

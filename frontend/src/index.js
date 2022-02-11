@@ -17,6 +17,8 @@ import Withdraw from "pages/Withdraw";
 import Admin from "pages/Admin";
 import Balance from "pages/Balance";
 
+import "react-datepicker/dist/react-datepicker.css";
+
 dotenv.config();
 
 const serverUrl = process.env.REACT_APP_MORALIS_SERVER_URL;
