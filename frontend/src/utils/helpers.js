@@ -8,7 +8,6 @@ import { CHAIN_TYPES } from "./enums";
  * @param {number | string} decimals Token Decimals
  */
 export const formatToEther = (balance, decimals = 18) => {
-  // debugger;
   if (typeof balance != "string") {
     throw new Error("Types are not correct");
   }
