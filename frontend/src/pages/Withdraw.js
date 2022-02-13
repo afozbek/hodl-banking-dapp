@@ -62,8 +62,9 @@ const Withdraw = () => {
     debugger;
 
     const remainingBalance = maxStoredTokens - formData.amount;
-    setTransactionList([...transactionList, { ...tx, name: TRANSACTION_NAMES.WITHDRAW }]);
+    setTransactionList([...transactionList, { ...tx, hash: tx.transactionHash, name: TRANSACTION_NAMES.WITHDRAW }]);
     setMaxStoredTokens(remainingBalance);
+    setIsUserAllowedToWithdraw(remainingBalance > 0);
 
     e.target.reset();
   };

@@ -46,7 +46,7 @@ const Hodl = () => {
       .send({ from: account, value: totalHodlAmountWei });
     debugger;
 
-    setTransactionList([...transactionList, { ...tx, name: TRANSACTION_NAMES.HODL }]);
+    setTransactionList([...transactionList, { ...tx, hash: tx.transactionHash, name: TRANSACTION_NAMES.HODL }]);
   };
 
   console.log({ transactionList });
