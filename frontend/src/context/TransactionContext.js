@@ -8,6 +8,10 @@ const TransactionContext = createContext();
 
 const TransactionContextProvider = props => {
   const [transactionList, setTransactionList] = useState([]);
+  const [userData, setUserData] = useState({
+    account: "",
+    isContractOwner: false
+  });
 
   const [web3Instance, setWeb3Instance] = useState(null);
   const [smartContractInstance, setSmartContractInstance] = useState(null);
@@ -42,11 +46,25 @@ const TransactionContextProvider = props => {
     return networks[chainID];
   }
 
-  const account = useMemo(() => {
-    if (user) {
-      return user.get("ethAddress");
+  useEffect(() => {
+    const initUser = async () => {
+      const account = user.get("ethAddress");
+      const isContractOwner = await hasUserAccountOwner(account);
+
+      setUserData({
+        account,
+        isContractOwner
+      });
+    };
+    if (user && smartContractInstance) {
+      initUser();
+    } else {
+      setUserData({
+        account: "",
+        isContractOwner: false
+      });
     }
-  }, [user]);
+  }, [user, smartContractInstance]);
 
   const getWeb3Instance = async () => {
     const localGanacheRPCUrl = "http://localhost:7545";
@@ -59,12 +77,24 @@ const TransactionContextProvider = props => {
     return new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
   };
 
-  const getStoredBalanceOfUser = async smartContractInstance => {
-    if (!account) {
+  const getStoredBalance = async () => {
+    if (!userData.account) {
+      return "0";
+    }
+
+    return (await smartContractInstance.methods.getStoredBalance()).call({ from: userData.account });
+  };
+
+  const getStoredBalanceOfUser = async account => {
+    if (!userData.account) {
       return Number.NaN;
     }
 
-    return (await smartContractInstance.methods.getStoredBalance()).call({ from: account });
+    if (!userData.isContractOwner) {
+      throw new Error("Not a contract owner");
+    }
+
+    return (await smartContractInstance.methods.getStoredBalance(account)).call({ from: userData.account });
   };
 
   const connectWallet = async () => {
@@ -72,10 +102,16 @@ const TransactionContextProvider = props => {
     const user = await authenticate({ signingMessage: "Connect Account with Moralis" });
   };
 
+  const hasUserAccountOwner = async account => {
+    return (await smartContractInstance.methods.hasUserAccountOwner(account)).call();
+  };
+
   const logoutUser = async () => {
     // For some reason user returns as undefined
     await logout();
   };
+
+  console.log({ userData });
 
   return (
     <TransactionContext.Provider
@@ -83,11 +119,13 @@ const TransactionContextProvider = props => {
         transactionList,
         web3Instance,
         smartContractInstance,
-        account,
+        account: userData.account,
+        userData,
         getContractInstance,
         setTransactionList,
         connectWallet,
         logoutUser,
+        getStoredBalance,
         getStoredBalanceOfUser
       }}
     >
