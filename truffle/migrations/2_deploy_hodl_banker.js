@@ -1,5 +1,5 @@
-var HodlBanker = artifacts.require("./HodlBanker.sol");
+var HodlBank = artifacts.require("./HodlBank.sol");
 
 module.exports = function (deployer) {
-  deployer.deploy(HodlBanker);
+  deployer.deploy(HodlBank);
 };
