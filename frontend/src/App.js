@@ -7,11 +7,11 @@ import { Link } from "react-router-dom";
 import { useMoralis } from "react-moralis";
 
 var App = () => {
-  const { web3Instance, smartContractInstance, account, getContractInstance, connectWallet, logoutUser } =
+  const { web3Instance, smartContractInstance, account, userData, getContractInstance, connectWallet, logoutUser } =
     useContext(TransactionContext);
 
   // const [moralisUser, setMoralisUser] = useState(null);
-  const { authenticate, isAuthenticated, user: moralisUser } = useMoralis();
+  const { user: moralisUser } = useMoralis();
 
   useEffect(() => {
     Modal.setAppElement("body");
@@ -68,7 +68,7 @@ var App = () => {
           <Link to="/balance">Balance</Link> {" - "}
           <Link to="/hodl">HODL</Link> {" - "}
           <Link to="/withdraw">Withdraw</Link> {" - "}
-          <Link to="/admin">Admin</Link> {" - "}
+          {userData.isContractOwner ? <Link to="/admin">Admin</Link> : null}
         </nav>
 
         <Outlet />

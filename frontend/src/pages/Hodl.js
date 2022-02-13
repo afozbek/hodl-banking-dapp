@@ -8,7 +8,8 @@ import { TRANSACTION_NAMES } from "utils/enums";
 import { formatToEther } from "utils/helpers";
 
 const Hodl = () => {
-  const { smartContractInstance, account, transactionList, setTransactionList } = useContext(TransactionContext);
+  const { smartContractInstance, account, transactionList, setTransactionList, getStoredBalance } =
+    useContext(TransactionContext);
 
   const { user } = useMoralis();
 
@@ -20,7 +21,7 @@ const Hodl = () => {
 
   const getBalance = async () => {
     console.log({ smartContractInstance });
-    const totalEthBalance = await smartContractInstance.methods.getStoredBalanceOfUser(account).call();
+    const totalEthBalance = await getStoredBalance();
     console.log({ totalEthBalance });
 
     setHoddleAmount(formatToEther(totalEthBalance));
@@ -40,11 +41,9 @@ const Hodl = () => {
 
     const totalHodlAmountWei = ethers.utils.parseEther(hodlFormData.amountToHodl);
 
-    debugger;
     const tx = await smartContractInstance.methods
       .deposit(timestamp)
       .send({ from: account, value: totalHodlAmountWei });
-    debugger;
 
     setTransactionList([...transactionList, { ...tx, hash: tx.transactionHash, name: TRANSACTION_NAMES.HODL }]);
   };

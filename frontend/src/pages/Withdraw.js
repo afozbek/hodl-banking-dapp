@@ -1,7 +1,7 @@
 import { TransactionContext } from "context/TransactionContext";
 import { parseEther } from "ethers/lib/utils";
 import useTransactionListener from "hooks/useTransactionListener";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TRANSACTION_NAMES } from "utils/enums";
 import { formatToEther } from "utils/helpers";
 
@@ -12,7 +12,7 @@ const Withdraw = () => {
     amount: "0"
   });
 
-  const { smartContractInstance, account, getStoredBalanceOfUser, transactionList, setTransactionList } =
+  const { smartContractInstance, account, getStoredBalance, transactionList, setTransactionList } =
     useContext(TransactionContext);
   const { lastFinishedTransaction } = useTransactionListener();
 
@@ -29,7 +29,7 @@ const Withdraw = () => {
   const init = async () => {
     if (smartContractInstance) {
       const hasUserWithdrawTokens = await canUserWithdrawTokens();
-      const totalStoredAmount = await getStoredBalanceOfUser(smartContractInstance);
+      const totalStoredAmount = await getStoredBalance();
       console.log({ totalStoredAmount });
 
       const storedEther = formatToEther(totalStoredAmount);
@@ -58,8 +58,6 @@ const Withdraw = () => {
     const tx = await smartContractInstance.methods
       .withdraw(parseEther(String(formData.amount)))
       .send({ from: account });
-
-    debugger;
 
     const remainingBalance = maxStoredTokens - formData.amount;
     setTransactionList([...transactionList, { ...tx, hash: tx.transactionHash, name: TRANSACTION_NAMES.WITHDRAW }]);
