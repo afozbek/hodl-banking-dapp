@@ -59,6 +59,14 @@ const TransactionContextProvider = props => {
     return new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
   };
 
+  const getStoredBalanceOfUser = async smartContractInstance => {
+    if (!account) {
+      return Number.NaN;
+    }
+
+    return (await smartContractInstance.methods.getStoredBalance()).call({ from: account });
+  };
+
   const connectWallet = async () => {
     // For some reason user returns as undefined
     const user = await authenticate({ signingMessage: "Connect Account with Moralis" });
@@ -79,7 +87,8 @@ const TransactionContextProvider = props => {
         getContractInstance,
         setTransactionList,
         connectWallet,
-        logoutUser
+        logoutUser,
+        getStoredBalanceOfUser
       }}
     >
       {props.children}

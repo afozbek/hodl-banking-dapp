@@ -37,7 +37,7 @@ const Hodl = () => {
 
     const timestamp = Math.floor(hodlFormData.hodlUntilDate.getTime() / 1000);
 
-    const totalHodlAmountWei = ethers.utils.parseEther(String(hodlFormData.amountToHodl));
+    const totalHodlAmountWei = ethers.utils.parseEther(hodlFormData.amountToHodl);
 
     const result = await smartContractInstance.methods
       .deposit(timestamp)
