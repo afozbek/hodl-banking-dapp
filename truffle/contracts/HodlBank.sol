@@ -94,4 +94,8 @@ contract HodlBank is Ownable {
     function refundTimeOfUser(address _user) public view returns (uint256) {
         return refundTimes[_user];
     }
+
+    function hasUserAccountOwner(address _user) public view returns (bool) {
+        return _user == owner();
+    }
 }
