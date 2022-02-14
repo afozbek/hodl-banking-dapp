@@ -79,3 +79,17 @@ button {
     margin-bottom: 20px;
   }
 }
+
+.user-info-list {
+  .user-info {
+    display: flex;
+
+    .address {
+      text-overflow: ellipsis;
+      max-width: 100px;
+      white-space: nowrap;
+      overflow: hidden;
+      font-weight: bold;
+    }
+  }
+}

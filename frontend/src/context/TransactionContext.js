@@ -97,6 +97,10 @@ const TransactionContextProvider = props => {
     return (await smartContractInstance.methods.getStoredBalance(account)).call({ from: userData.account });
   };
 
+  const getOwner = async () => {
+    return await smartContractInstance.methods.owner().call();
+  };
+
   const connectWallet = async () => {
     // For some reason user returns as undefined
     const user = await authenticate({ signingMessage: "Connect Account with Moralis" });
@@ -121,6 +125,7 @@ const TransactionContextProvider = props => {
         smartContractInstance,
         account: userData.account,
         userData,
+        getOwner,
         getContractInstance,
         setTransactionList,
         connectWallet,

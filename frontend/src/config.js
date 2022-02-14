@@ -1,5 +1,5 @@
 // Change here with your contract address
-export const CONTRACT_ADDRESS = "0xe1b493CF46E17d73B27ba21d542983209C59FB6a";
+export const CONTRACT_ADDRESS = "0x0208a4C532B89663F9F2E5495e4d6AD351c09a90";
 
 // If you just want to test functionality you do not need to change it
 export const CONTRACT_ABI = [
@@ -134,6 +134,55 @@ export const CONTRACT_ABI = [
         internalType: "uint256",
         name: "",
         type: "uint256"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [],
+    name: "getUserAddressList",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "userAddress",
+        type: "address"
+      }
+    ],
+    name: "getUserInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "userAddress",
+            type: "address"
+          },
+          {
+            internalType: "uint256",
+            name: "storedBalance",
+            type: "uint256"
+          },
+          {
+            internalType: "bool",
+            name: "isExist",
+            type: "bool"
+          }
+        ],
+        internalType: "struct HodlBank.UserInfo",
+        name: "",
+        type: "tuple"
       }
     ],
     stateMutability: "view",

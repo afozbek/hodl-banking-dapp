@@ -12,35 +12,29 @@ const Withdraw = () => {
     amount: "0"
   });
 
-  const { smartContractInstance, account, getStoredBalance, transactionList, setTransactionList } =
+  const { smartContractInstance, userData, getStoredBalance, transactionList, setTransactionList } =
     useContext(TransactionContext);
   const { lastFinishedTransaction } = useTransactionListener();
 
   useEffect(() => {
-    init();
-  }, [smartContractInstance]);
-
-  useEffect(() => {
-    if (lastFinishedTransaction) {
+    if (userData.account && smartContractInstance) {
       init();
     }
-  }, [lastFinishedTransaction]);
+  }, [smartContractInstance, userData.account, lastFinishedTransaction]);
 
   const init = async () => {
-    if (smartContractInstance) {
-      const hasUserWithdrawTokens = await canUserWithdrawTokens();
-      const totalStoredAmount = await getStoredBalance();
-      console.log({ totalStoredAmount });
+    const hasUserWithdrawTokens = await canUserWithdrawTokens();
+    const totalStoredAmount = await getStoredBalance();
+    console.log({ totalStoredAmount });
 
-      const storedEther = formatToEther(totalStoredAmount);
+    const storedEther = formatToEther(totalStoredAmount);
 
-      setMaxStoredTokens(storedEther);
-      setIsUserAllowedToWithdraw(hasUserWithdrawTokens && Number(storedEther) > 0);
-    }
+    setMaxStoredTokens(storedEther);
+    setIsUserAllowedToWithdraw(hasUserWithdrawTokens && Number(storedEther) > 0);
   };
 
   const canUserWithdrawTokens = async () => {
-    const timestamp = await smartContractInstance.methods.refundTimeOfUser(account).call();
+    const timestamp = await smartContractInstance.methods.refundTimeOfUser(userData.account).call();
     console.log({ timestamp });
 
     return new Date().getTime() > timestamp * 1000;
@@ -57,7 +51,7 @@ const Withdraw = () => {
 
     const tx = await smartContractInstance.methods
       .withdraw(parseEther(String(formData.amount)))
-      .send({ from: account });
+      .send({ from: userData.account });
 
     const remainingBalance = maxStoredTokens - formData.amount;
     setTransactionList([...transactionList, { ...tx, hash: tx.transactionHash, name: TRANSACTION_NAMES.WITHDRAW }]);

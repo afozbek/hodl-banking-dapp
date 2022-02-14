@@ -5,6 +5,7 @@ import Modal from "react-modal/lib/components/Modal";
 import { Outlet } from "react-router";
 import { Link } from "react-router-dom";
 import { useMoralis } from "react-moralis";
+import useTransactionListener from "hooks/useTransactionListener";
 
 var App = () => {
   const { web3Instance, smartContractInstance, account, userData, getContractInstance, connectWallet, logoutUser } =
@@ -12,6 +13,8 @@ var App = () => {
 
   // const [moralisUser, setMoralisUser] = useState(null);
   const { user: moralisUser } = useMoralis();
+
+  const { lastFinishedTransaction } = useTransactionListener();
 
   useEffect(() => {
     Modal.setAppElement("body");
@@ -61,7 +64,8 @@ var App = () => {
           account,
           smartContractInstance,
           web3Instance,
-          getContractInstance
+          getContractInstance,
+          lastFinishedTransaction
         }}
       >
         <nav style={{ borderBottom: "solid 1px", paddingBottom: "1rem", cursor: "pointer" }}>

