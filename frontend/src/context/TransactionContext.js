@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 import Web3 from "web3";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "config";
@@ -15,7 +15,6 @@ const TransactionContextProvider = props => {
 
   const [web3Instance, setWeb3Instance] = useState(null);
   const [smartContractInstance, setSmartContractInstance] = useState(null);
-  const [networkName, setNetworkName] = useState(null);
   const { user, authenticate, logout } = useMoralis();
 
   useEffect(() => {
@@ -103,7 +102,7 @@ const TransactionContextProvider = props => {
 
   const connectWallet = async () => {
     // For some reason user returns as undefined
-    const user = await authenticate({ signingMessage: "Connect Account with Moralis" });
+    await authenticate({ signingMessage: "Connect Account with Moralis" });
   };
 
   const hasUserAccountOwner = async account => {
