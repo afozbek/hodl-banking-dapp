@@ -1,6 +1,8 @@
 import { TransactionContext } from "context/TransactionContext";
 import { parseEther } from "ethers/lib/utils";
+import useTransactionListener from "hooks/useTransactionListener";
 import React, { useContext, useEffect, useState } from "react";
+import { TRANSACTION_NAMES } from "utils/enums";
 import { formatToEther } from "utils/helpers";
 
 const Withdraw = () => {
@@ -10,35 +12,38 @@ const Withdraw = () => {
     amount: "0"
   });
 
-  const { smartContractInstance, account, getStoredBalanceOfUser } = useContext(TransactionContext);
+  const { smartContractInstance, account, getStoredBalance, transactionList, setTransactionList } =
+    useContext(TransactionContext);
+  const { lastFinishedTransaction } = useTransactionListener();
 
   useEffect(() => {
-    const init = async () => {
-      if (smartContractInstance) {
-        const hasUserWithdrawTokens = await canUserWithdrawTokens();
-
-        if (hasUserWithdrawTokens) {
-          const totalStoredAmount = await getStoredBalanceOfUser(smartContractInstance);
-
-          console.log({ totalStoredAmount });
-
-          setMaxStoredTokens(formatToEther(totalStoredAmount));
-        }
-
-        setIsUserAllowedToWithdraw(hasUserWithdrawTokens);
-      }
-    };
-
     init();
   }, [smartContractInstance]);
+
+  useEffect(() => {
+    if (lastFinishedTransaction) {
+      init();
+    }
+  }, [lastFinishedTransaction]);
+
+  const init = async () => {
+    if (smartContractInstance) {
+      const hasUserWithdrawTokens = await canUserWithdrawTokens();
+      const totalStoredAmount = await getStoredBalance();
+      console.log({ totalStoredAmount });
+
+      const storedEther = formatToEther(totalStoredAmount);
+
+      setMaxStoredTokens(storedEther);
+      setIsUserAllowedToWithdraw(hasUserWithdrawTokens && Number(storedEther) > 0);
+    }
+  };
 
   const canUserWithdrawTokens = async () => {
     const timestamp = await smartContractInstance.methods.refundTimeOfUser(account).call();
     console.log({ timestamp });
 
-    const canWithdraw = new Date().getTime() > timestamp * 1000;
-
-    return canWithdraw;
+    return new Date().getTime() > timestamp * 1000;
   };
 
   const handleWithdraw = async e => {
@@ -54,9 +59,17 @@ const Withdraw = () => {
       .withdraw(parseEther(String(formData.amount)))
       .send({ from: account });
 
-    setMaxStoredTokens(prev => prev - formData.amount);
+    const remainingBalance = maxStoredTokens - formData.amount;
+    setTransactionList([...transactionList, { ...tx, hash: tx.transactionHash, name: TRANSACTION_NAMES.WITHDRAW }]);
+    setMaxStoredTokens(remainingBalance);
+    setIsUserAllowedToWithdraw(remainingBalance > 0);
+
     e.target.reset();
   };
+
+  console.log({ lastFinishedTransaction });
+  console.log({ isUserAllowedToWithdraw });
+  console.log({ maxStoredTokens });
 
   return (
     <div>
@@ -87,10 +100,14 @@ const Withdraw = () => {
             <input type="submit" value="Withdraw" disabled={!isUserAllowedToWithdraw} />
           </form>
         </>
+      ) : maxStoredTokens <= 0 ? (
+        <>
+          <h4>You dont have balance in the smart contract</h4>
+        </>
       ) : (
-        <div>
-          <h4>Wait some amount of time</h4>
-        </div>
+        <>
+          <h4>You need to wait certain time</h4>
+        </>
       )}
     </div>
   );

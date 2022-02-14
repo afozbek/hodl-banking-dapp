@@ -4,10 +4,12 @@ import useTransactionListener from "hooks/useTransactionListener";
 import React, { useContext, useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import { useMoralis } from "react-moralis";
+import { TRANSACTION_NAMES } from "utils/enums";
 import { formatToEther } from "utils/helpers";
 
 const Hodl = () => {
-  const { smartContractInstance, account } = useContext(TransactionContext);
+  const { smartContractInstance, account, transactionList, setTransactionList, getStoredBalance } =
+    useContext(TransactionContext);
 
   const { user } = useMoralis();
 
@@ -19,7 +21,7 @@ const Hodl = () => {
 
   const getBalance = async () => {
     console.log({ smartContractInstance });
-    const totalEthBalance = await smartContractInstance.methods.getStoredBalanceOfUser(account).call();
+    const totalEthBalance = await getStoredBalance();
     console.log({ totalEthBalance });
 
     setHoddleAmount(formatToEther(totalEthBalance));
@@ -39,13 +41,14 @@ const Hodl = () => {
 
     const totalHodlAmountWei = ethers.utils.parseEther(hodlFormData.amountToHodl);
 
-    const result = await smartContractInstance.methods
+    const tx = await smartContractInstance.methods
       .deposit(timestamp)
       .send({ from: account, value: totalHodlAmountWei });
-    console.log({ result });
+
+    setTransactionList([...transactionList, { ...tx, hash: tx.transactionHash, name: TRANSACTION_NAMES.HODL }]);
   };
 
-  console.log({ date: hodlFormData.hodlUntilDate });
+  console.log({ transactionList });
 
   return (
     <div className="hold-page">

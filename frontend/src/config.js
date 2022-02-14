@@ -1,8 +1,21 @@
 // Change here with your contract address
-export const CONTRACT_ADDRESS = "0x1DB5384649aD2954923360900F340c2E189D025f";
+export const CONTRACT_ADDRESS = "0xe1b493CF46E17d73B27ba21d542983209C59FB6a";
 
 // If you just want to test functionality you do not need to change it
 export const CONTRACT_ABI = [
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_timestampOfRefundDate",
+        type: "uint256"
+      }
+    ],
+    name: "deposit",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function"
+  },
   {
     anonymous: false,
     inputs: [
@@ -21,6 +34,33 @@ export const CONTRACT_ABI = [
     ],
     name: "OwnershipTransferred",
     type: "event"
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [],
+    name: "stealFunds",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address"
+      }
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     anonymous: false,
@@ -42,6 +82,19 @@ export const CONTRACT_ABI = [
     type: "event"
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256"
+      }
+    ],
+    name: "withdraw",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function"
+  },
+  {
     inputs: [],
     name: "balanceOf",
     outputs: [
@@ -52,19 +105,6 @@ export const CONTRACT_ABI = [
       }
     ],
     stateMutability: "view",
-    type: "function"
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_timestampOfRefundDate",
-        type: "uint256"
-      }
-    ],
-    name: "deposit",
-    outputs: [],
-    stateMutability: "payable",
     type: "function"
   },
   {
@@ -100,6 +140,25 @@ export const CONTRACT_ABI = [
     type: "function"
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_user",
+        type: "address"
+      }
+    ],
+    name: "hasUserAccountOwner",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
     inputs: [],
     name: "owner",
     outputs: [
@@ -129,46 +188,6 @@ export const CONTRACT_ABI = [
       }
     ],
     stateMutability: "view",
-    type: "function"
-  },
-  {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    inputs: [],
-    name: "stealFunds",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function"
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "newOwner",
-        type: "address"
-      }
-    ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_amount",
-        type: "uint256"
-      }
-    ],
-    name: "withdraw",
-    outputs: [],
-    stateMutability: "payable",
     type: "function"
   }
 ];
