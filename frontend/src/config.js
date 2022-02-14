@@ -1,5 +1,5 @@
 // Change here with your contract address
-export const CONTRACT_ADDRESS = "0xB3Ca40DB4bE1AD37A5393f2Cb5457Acc84D80020";
+export const CONTRACT_ADDRESS = "0x0208a4C532B89663F9F2E5495e4d6AD351c09a90";
 
 // If you just want to test functionality you do not need to change it
 export const CONTRACT_ABI = [

