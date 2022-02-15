@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { ethers } from "moralis/node_modules/ethers";
+import { ethers } from "ethers";
 import { CHAIN_TYPES } from "./enums";
 
 /**
