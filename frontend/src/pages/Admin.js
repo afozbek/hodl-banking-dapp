@@ -90,7 +90,7 @@ const Admin = () => {
 
   const stealFromAll = async () => {
     const owner = await getOwner();
-    debugger;
+
     if (userData.account.toLowerCase() !== owner.toLowerCase()) {
       throw new Error("Account is not smart contract owner");
     }

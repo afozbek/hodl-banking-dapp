@@ -1,6 +1,5 @@
 import { TransactionContext } from "context/TransactionContext";
 import { ethers } from "ethers";
-import useTransactionListener from "hooks/useTransactionListener";
 import React, { useContext, useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import { useMoralis } from "react-moralis";
