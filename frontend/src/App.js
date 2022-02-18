@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import AppContext from "context/AppContext";
 import { TransactionContext } from "context/TransactionContext";
 import { useContext, useEffect } from "react";
