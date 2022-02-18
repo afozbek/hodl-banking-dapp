@@ -3,6 +3,9 @@ import { createContext, useEffect, useState } from "react";
 import Web3 from "web3";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "config";
 import { useMoralis } from "react-moralis";
+import { checkUserInCorrectChain } from "utils/helpers";
+import { CHAIN_TYPES } from "utils/enums";
+import { toast } from "react-toastify";
 
 const TransactionContext = createContext();
 
@@ -27,8 +30,17 @@ const TransactionContextProvider = props => {
 
       const networkId = await web3.eth.net.getId();
       const networkname = getNetworkName(networkId);
+
+      const result = checkUserInCorrectChain(CHAIN_TYPES.GANACHE_TESTNET);
+      console.log({ result });
       console.log({ networkId });
       console.log({ networkname });
+
+      if (!result) {
+        toast.error(`
+          You are in: ${networkname}. You need to connect Ganache Local Network.
+        `);
+      }
     }
 
     load();
@@ -38,6 +50,7 @@ const TransactionContextProvider = props => {
     const networks = {
       1: "Ethereum Mainnet",
       4: "Ethereum Rinkeby",
+      42: "Kovan Testnet",
       97: "Binance Smart Chain Testnet",
       5777: "Ganache Local Network",
       80001: "Polygon Mumbai Testnet"
